@@ -10,6 +10,7 @@ const Contact = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     company: "",
     message: "",
   });
@@ -21,6 +22,7 @@ const Contact = () => {
       firstName: "",
       lastName: "",
       email: "",
+      phone: "",
       company: "",
       message: "",
     });
@@ -67,6 +69,15 @@ const Contact = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                className="bg-muted border-0"
+              />
+              
+              <Input
+                name="phone"
+                type="tel"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
                 className="bg-muted border-0"
               />
               
