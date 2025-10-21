@@ -5,8 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const Contact = () => {
+  const { ref, isVisible } = useScrollAnimation();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -63,9 +65,9 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="w-full py-20 bg-background">
+    <section id="contact" ref={ref as React.RefObject<HTMLElement>} className="w-full py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className={`grid md:grid-cols-2 gap-12 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Let's Work Together</h2>
             <p className="text-muted-foreground mb-8">

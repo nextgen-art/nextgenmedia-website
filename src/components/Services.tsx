@@ -1,5 +1,6 @@
 import { Pencil, Share2, Target, Megaphone, Settings } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const services = [
   {
@@ -30,19 +31,27 @@ const services = [
 ];
 
 const Services = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
-    <section id="services" className="w-full py-20 bg-background">
+    <section id="services" ref={ref as React.RefObject<HTMLElement>} className="w-full py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="max-w-2xl mb-16">
+        <div className={`max-w-2xl mb-16 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
           <p className="text-muted-foreground text-lg">
             Comprehensive media solutions designed to elevate your brand and drive measurable results.
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
-            <Card key={index} className="border border-border hover:shadow-lg transition-shadow">
+            <Card
+              key={index}
+              className={`border border-border hover:shadow-lg transition-all ${
+                isVisible ? 'animate-fade-in' : 'opacity-0'
+              }`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <CardContent className="p-8 space-y-4">
                 <service.icon className="w-8 h-8" strokeWidth={1.5} />
                 <h3 className="text-xl font-semibold">{service.title}</h3>
