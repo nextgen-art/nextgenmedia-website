@@ -45,6 +45,5 @@ Thumbs.db
 # Misc
 *.pem
 
-# Large video files (too big for GitHub - host externally)
-public/*.mov
-public/*.mp4
+# Large video files (exclude only the unused ones)
+public/angel on the porch.mp4
