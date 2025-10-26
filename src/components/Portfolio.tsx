@@ -150,8 +150,8 @@ const Portfolio = () => {
         </div>
 
         <div className={`grid md:grid-cols-2 gap-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-          <VideoPlayer src="/client 1.mov" projectType="Social Media Content" />
-          <VideoPlayer src="/Sharonvid.mov" projectType="Company Showcase" />
+          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/client-1.mov" projectType="Social Media Content" />
+          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/sharonvid.mov" projectType="Company Showcase" />
         </div>
       </div>
     </section>

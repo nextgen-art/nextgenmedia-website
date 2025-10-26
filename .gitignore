@@ -45,5 +45,6 @@ Thumbs.db
 # Misc
 *.pem
 
-# Large video files (exclude only the unused ones)
-public/angel on the porch.mp4
+# Large video files (now hosted on Supabase Storage)
+public/*.mov
+public/*.mp4
