@@ -151,7 +151,7 @@ const Portfolio = () => {
 
         <div className={`grid md:grid-cols-2 gap-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
           <VideoPlayer src="/client 1.mov" projectType="Social Media Content" />
-          <VideoPlayer src="/client 2.mov" projectType="Brand Video Production" />
+          <VideoPlayer src="/Sharonvid.mov" projectType="Company Showcase" />
         </div>
       </div>
     </section>
