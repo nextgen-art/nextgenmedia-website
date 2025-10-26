@@ -146,7 +146,7 @@ const Contact = () => {
                   <Mail className="w-5 h-5 mt-1 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Email</p>
-                    <p className="font-medium">info@nextgenmedia.com</p>
+                    <p className="font-medium">nextgenmediaoutreach@gmail.com</p>
                   </div>
                 </div>
                 
@@ -154,18 +154,10 @@ const Contact = () => {
                   <Phone className="w-5 h-5 mt-1 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Phone</p>
-                    <p className="font-medium">(555) 123-4567</p>
+                    <p className="font-medium">856-449-5318</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <MapPin className="w-5 h-5 mt-1 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Address</p>
-                    <p className="font-medium">123 Business Street</p>
-                    <p className="font-medium">City, State 12345</p>
-                  </div>
-                </div>
               </div>
             </div>
             
@@ -174,7 +166,7 @@ const Contact = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Monday - Friday</span>
-                  <span className="font-medium">9:00 AM - 6:00 PM</span>
+                  <span className="font-medium">9:00 AM - 5:00 PM</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Saturday</span>
