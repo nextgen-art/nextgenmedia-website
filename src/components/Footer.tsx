@@ -57,10 +57,9 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 text-sm">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>info@nextgenmedia.com</li>
-              <li>(555) 123-4567</li>
-              <li>123 Business Street</li>
-              <li>City, State 12345</li>
+              <li>nextgenmediaoutreach@gmail.com</li>
+              <li>856-449-5318</li>
+              <li>South Jersey</li>
             </ul>
           </div>
         </div>
