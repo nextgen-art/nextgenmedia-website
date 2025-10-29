@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     question: "Why should we go with you?",
-    answer: "You shouldn't if you need to be convinced. We have a list of client testimonials, written, and recorded about their experiences with us & we want every client to genuine want to partner with us because they feel like we'd be the best fit for them, not because they were convinced.",
+    answer: "You shouldn't if you need to be convinced. We have a list of client testimonials, written, and recorded about their experiences with us & we want every client to genuinely want to partner with us because they feel like we'd be the best fit for them, not because they were convinced.",
   },
   {
     question: "How do I get a quote?",
