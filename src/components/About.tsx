@@ -91,7 +91,7 @@ const About = () => {
               </div>
 
               {/* Progress Bar */}
-              <div className="absolute bottom-12 left-4 right-4 pointer-events-auto">
+              <div className="absolute bottom-12 left-4 right-16 pointer-events-auto">
                 <div className="flex items-center gap-2">
                   <span className="text-white text-xs font-medium min-w-[40px]">
                     {formatTime(currentTime)}

@@ -93,7 +93,7 @@ const VideoPlayer = ({ src, projectType }: VideoPlayerProps) => {
           </div>
 
           {/* Progress Bar */}
-          <div className="absolute bottom-12 left-4 right-4 pointer-events-auto">
+          <div className="absolute bottom-12 left-4 right-16 pointer-events-auto">
             <div className="flex items-center gap-2">
               <span className="text-white text-xs font-medium min-w-[40px]">
                 {formatTime(currentTime)}
@@ -150,8 +150,8 @@ const Portfolio = () => {
         </div>
 
         <div className={`grid md:grid-cols-2 gap-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/client%201.mov" projectType="Social Media Content" />
-          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/Sharonvid.mov" projectType="Company Showcase" />
+          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/josh.mov" projectType="Company Documentary" />
+          <VideoPlayer src="https://dghlytwuslldhogqscho.supabase.co/storage/v1/object/public/videos/ethan.mov" projectType="Short Form Content" />
         </div>
       </div>
     </section>
