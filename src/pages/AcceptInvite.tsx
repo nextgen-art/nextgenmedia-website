@@ -11,6 +11,7 @@ interface Invitation {
   id: string;
   invite_token: string;
   client_email: string;
+  client_id?: string;
   expires_at: string;
   status: string;
   clients: {
@@ -19,7 +20,7 @@ interface Invitation {
     client_name: string;
     business_name: string;
     company_name: string;
-  };
+  } | null;
 }
 
 export default function AcceptInvite() {
