@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
+import Pricing from "@/components/Pricing";
 import Portfolio from "@/components/Portfolio";
 import Performance from "@/components/Performance";
 import About from "@/components/About";
@@ -35,6 +36,7 @@ const Index = () => {
       <main>
         <Hero />
         <Services />
+        <Pricing />
         <Portfolio />
         <Performance />
         <About />
