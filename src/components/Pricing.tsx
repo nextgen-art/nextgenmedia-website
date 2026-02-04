@@ -6,7 +6,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 const pricingPlans = [
   {
     name: "Starter",
-    price: "$1,500",
+    price: "$2,000",
     period: "/month",
     description: "Perfect for small businesses getting started with digital marketing.",
     features: [
@@ -22,27 +22,58 @@ const pricingPlans = [
     period: "/month",
     description: "Ideal for growing brands ready to scale their presence.",
     features: [
-      "Social media management (4 platforms)",
-      "12 content pieces per month",
-      "Lead generation funnel setup",
-      "Monthly strategy calls",
-      "Advanced analytics dashboard",
-      "Priority support",
+      "Bi-weekly content shoots (2 per month)",
+      "40–50 total edited assets per month",
+      "30 edited photos",
+      "10–15 edited short-form videos",
+      "Multi-platform optimized delivery (Instagram + Facebook)",
+      "Monthly content strategy session",
+      "Full caption writing with CTAs",
+      "Hashtag research & targeting",
+      "Content calendar + Posting",
+      "Monthly performance insights",
     ],
     popular: true,
   },
   {
+    name: "Elite",
+    price: "$5,000",
+    period: "/month",
+    description: "Comprehensive solution for brands seeking maximum growth and engagement.",
+    features: [
+      "Weekly content shoots (4 per month)",
+      "60+ total edited assets per month",
+      "45 edited photos",
+      "15 edited short-form videos",
+      "Multi-platform optimized delivery",
+      "Full posting & scheduling across 3 platforms",
+      "Daily story creation and posting",
+      "Caption writing with CTAs",
+      "Hashtag research and targeting",
+      "DM monitoring and response",
+      "Active community engagement",
+      "Ad campaign creation and management",
+      "Weekly strategy calls",
+      "Advanced performance reports with actionable insights",
+      "Ongoing optimization based on performance data",
+    ],
+  },
+  {
     name: "Enterprise",
     price: "Custom",
-    period: "",
-    description: "Full-service solution for established businesses.",
+    period: " Pricing",
+    description: "Tailored solutions for multi-location businesses and large-scale operations.",
     features: [
-      "Unlimited platform management",
-      "Custom content production",
-      "Ad campaign management",
+      "Custom photos and videos tailored to your brand",
+      "Custom content creation schedule",
+      "Multi-location content strategies",
+      "Brand consistency across all locations",
+      "Location-specific campaigns for local impact",
+      "Management across multiple social platforms",
       "Dedicated account manager",
       "24/7 priority support",
-      "Quarterly business reviews",
+      "Revenue initiative meetings",
+      "Ongoing optimization based on ROI metrics",
     ],
   },
 ];
@@ -60,7 +91,7 @@ const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
           {pricingPlans.map((plan, index) => (
             <Card
               key={index}
