@@ -39,6 +39,9 @@ const Header = () => {
           <a href="#services" className="text-sm text-foreground hover:text-foreground/80 transition-colors">
             Services
           </a>
+          <a href="#pricing" className="text-sm text-foreground hover:text-foreground/80 transition-colors">
+            Pricing
+          </a>
           <a href="#portfolio" className="text-sm text-foreground hover:text-foreground/80 transition-colors">
             Portfolio
           </a>

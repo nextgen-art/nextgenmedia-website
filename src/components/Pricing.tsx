@@ -27,7 +27,7 @@ const pricingPlans = [
     description: "Ideal for growing brands ready to scale their presence.",
     features: [
       "Bi-weekly content shoots (2 per month)",
-      "40–45 total edited assets per month",
+      "40–50 total edited assets per month",
       "30–35 edited photos",
       "8–10 edited short-form videos",
       "Multi-platform optimized delivery (Instagram + Facebook)",
