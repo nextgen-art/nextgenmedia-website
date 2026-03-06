@@ -17,13 +17,16 @@ const About = () => {
 
     const handleTimeUpdate = () => setCurrentTime(video.currentTime);
     const handleLoadedMetadata = () => setDuration(video.duration);
+    const handleLoadedData = () => { video.currentTime = 0.1; };
 
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('loadeddata', handleLoadedData);
 
     return () => {
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('loadeddata', handleLoadedData);
     };
   }, []);
 
@@ -66,7 +69,7 @@ const About = () => {
           <div className="relative max-w-[450px] h-[550px] md:h-[650px] mx-auto rounded-3xl overflow-hidden bg-black group order-2 md:order-1">
             <video
               ref={videoRef}
-              src="/videos/intro.mp4#t=0.1" preload="metadata"
+              src="/videos/intro.mp4" preload="auto"
               className="w-full h-full object-cover"
               muted={isMuted}
               playsInline
