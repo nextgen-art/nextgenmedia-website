@@ -21,7 +21,12 @@ const VideoPlayer = ({ src, projectType }: VideoPlayerProps) => {
 
     const handleTimeUpdate = () => setCurrentTime(video.currentTime);
     const handleLoadedMetadata = () => setDuration(video.duration);
-    const handleLoadedData = () => { video.currentTime = 0.1; };
+    const handleLoadedData = () => {
+      video.play().then(() => {
+        video.pause();
+        video.currentTime = 0;
+      }).catch(() => {});
+    };
 
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
@@ -71,7 +76,8 @@ const VideoPlayer = ({ src, projectType }: VideoPlayerProps) => {
       <div className="relative max-w-[450px] h-[550px] md:h-[650px] mx-auto rounded-3xl overflow-hidden bg-black group">
         <video
           ref={videoRef}
-          src={src} preload="auto"
+          src={src}
+          preload="auto"
           className="w-full h-full object-cover"
           muted={isMuted}
           playsInline
