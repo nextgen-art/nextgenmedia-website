@@ -66,7 +66,7 @@ const About = () => {
           <div className="relative max-w-[450px] h-[550px] md:h-[650px] mx-auto rounded-3xl overflow-hidden bg-black group order-2 md:order-1">
             <video
               ref={videoRef}
-              src="/videos/intro.mp4"
+              src="/videos/intro.mp4#t=0.1" preload="metadata"
               className="w-full h-full object-cover"
               muted={isMuted}
               playsInline

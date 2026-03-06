@@ -68,7 +68,7 @@ const VideoPlayer = ({ src, projectType }: VideoPlayerProps) => {
       <div className="relative max-w-[450px] h-[550px] md:h-[650px] mx-auto rounded-3xl overflow-hidden bg-black group">
         <video
           ref={videoRef}
-          src={src}
+          src={`${src}#t=0.1`} preload="metadata"
           className="w-full h-full object-cover"
           muted={isMuted}
           playsInline
