@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+
+const CONTACT_WEBHOOK_URL = "https://primary-production-f0f7.up.railway.app/webhook/contact-inquiry";
 
 const Contact = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -24,21 +25,21 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_inquiries')
-        .insert([
-          {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone: formData.phone || null,
-            company: formData.company || null,
-            message: formData.message,
-          }
-        ]);
+      const response = await fetch(CONTACT_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone || null,
+          company: formData.company || null,
+          message: formData.message,
+        }),
+      });
 
-      if (error) {
-        console.error('Supabase error:', error);
+      if (!response.ok) {
+        console.error('Webhook error:', response.status, response.statusText);
         toast.error("Failed to send message. Please try again.");
         return;
       }
