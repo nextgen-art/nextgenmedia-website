@@ -27,6 +27,8 @@ import { DeleteClientDialog } from "@/pages/admin-dashboard/components/DeleteCli
 import { InvoiceConfirmDialog } from "@/pages/admin-dashboard/components/InvoiceConfirmDialog";
 import { ClientDetailsDialog } from "@/pages/admin-dashboard/components/ClientDetailsDialog";
 import { UploadDocumentDialog } from "@/pages/admin-dashboard/components/UploadDocumentDialog";
+import { AddClientDialog } from "@/pages/admin-dashboard/components/AddClientDialog";
+import { InviteLinkDialog } from "@/pages/admin-dashboard/components/InviteLinkDialog";
 
 export default function AdminDashboard() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -62,6 +64,14 @@ export default function AdminDashboard() {
   const [hasClientChanges, setHasClientChanges] = useState(false);
   const [savingClientDetails, setSavingClientDetails] = useState(false);
   const [sendingFeedback, setSendingFeedback] = useState<Map<string, boolean>>(new Map());
+  const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
+  const [addClientForm, setAddClientForm] = useState<Partial<Client>>({});
+  const [addingClient, setAddingClient] = useState(false);
+  const [inviteLinkDialogOpen, setInviteLinkDialogOpen] = useState(false);
+  const [clientForInvite, setClientForInvite] = useState<Client | null>(null);
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [existingInviteExpiry, setExistingInviteExpiry] = useState<string | null>(null);
+  const [generatingInvite, setGeneratingInvite] = useState(false);
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -270,6 +280,155 @@ export default function AdminDashboard() {
         return next;
       });
     }
+  }
+
+  function handleOpenAddClient() {
+    setAddClientForm({ status: "new" });
+    setAddClientDialogOpen(true);
+  }
+
+  async function handleAddClient() {
+    const name = addClientForm.client_name?.trim();
+    const email = addClientForm.client_email?.trim();
+
+    if (!name) {
+      toast.error("Client name is required");
+      return;
+    }
+    if (!email) {
+      toast.error("Client email is required");
+      return;
+    }
+
+    setAddingClient(true);
+    try {
+      // Auto-generate client_id
+      const { data: existing } = await supabase
+        .from("clients")
+        .select("client_id");
+
+      let nextNum = 1;
+      if (existing) {
+        const nums = existing
+          .map((c) => c.client_id?.match(/^NGM-(\d+)$/))
+          .filter(Boolean)
+          .map((m) => parseInt(m![1], 10));
+        if (nums.length > 0) {
+          nextNum = Math.max(...nums) + 1;
+        }
+      }
+      const clientId = `NGM-${String(nextNum).padStart(3, "0")}`;
+
+      const { error } = await supabase.from("clients").insert({
+        client_id: clientId,
+        client_name: name,
+        client_email: email,
+        business_name: addClientForm.business_name?.trim() || null,
+        phone_number: addClientForm.phone_number?.trim() || null,
+        package_name: addClientForm.package_name?.trim() || null,
+        budget: addClientForm.budget?.trim() || null,
+        notes: addClientForm.notes?.trim() || null,
+        status: "new",
+      });
+
+      if (error) throw error;
+
+      toast.success(`Client ${name} added successfully (${clientId})`);
+      setAddClientDialogOpen(false);
+      setAddClientForm({});
+      fetchClients();
+    } catch (error: any) {
+      console.error("Error adding client:", error);
+      toast.error(error.message || "Failed to add client");
+    } finally {
+      setAddingClient(false);
+    }
+  }
+
+  async function handleOpenInviteDialog(client: Client) {
+    setClientForInvite(client);
+    setInviteUrl(null);
+    setExistingInviteExpiry(null);
+    setInviteLinkDialogOpen(true);
+
+    // Check for existing pending, non-expired invitation
+    try {
+      const { data } = await supabase
+        .from("client_invitations")
+        .select("invite_token, expires_at")
+        .eq("client_id", client.id)
+        .eq("status", "pending")
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (data) {
+        setInviteUrl(`${window.location.origin}/invite/${data.invite_token}`);
+        setExistingInviteExpiry(data.expires_at);
+      }
+    } catch (error) {
+      // No existing invite found, that's fine
+      console.error("Error checking existing invites:", error);
+    }
+  }
+
+  async function handleGenerateInviteLink() {
+    if (!clientForInvite) return;
+
+    setGeneratingInvite(true);
+    try {
+      const token = crypto.randomUUID();
+      const expiresAt = new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      ).toISOString();
+
+      const { error } = await supabase.from("client_invitations").insert({
+        invite_token: token,
+        client_email: clientForInvite.client_email,
+        client_id: clientForInvite.id,
+        expires_at: expiresAt,
+        status: "pending",
+      });
+
+      if (error) throw error;
+
+      // Update client status
+      await supabase
+        .from("clients")
+        .update({ status: "invitation_sent" })
+        .eq("id", clientForInvite.id);
+
+      setInviteUrl(`${window.location.origin}/invite/${token}`);
+      setExistingInviteExpiry(expiresAt);
+      toast.success("Invite link generated!");
+      fetchClients();
+    } catch (error: any) {
+      console.error("Error generating invite link:", error);
+      toast.error(error.message || "Failed to generate invite link");
+    } finally {
+      setGeneratingInvite(false);
+    }
+  }
+
+  async function handleRegenerateInviteLink() {
+    if (!clientForInvite) return;
+
+    setGeneratingInvite(true);
+    try {
+      // Expire all existing pending invitations
+      await supabase
+        .from("client_invitations")
+        .update({ status: "expired" })
+        .eq("client_id", clientForInvite.id)
+        .eq("status", "pending");
+    } catch (error) {
+      console.error("Error expiring old invites:", error);
+    }
+
+    // Generate new one (setGeneratingInvite is already true)
+    setGeneratingInvite(false);
+    await handleGenerateInviteLink();
   }
 
   function handleQuickAction(action: "email" | "call" | "viewHub") {
@@ -788,6 +947,8 @@ export default function AdminDashboard() {
               onSendFeedback={handleSendFeedbackEmail}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              onAddClient={handleOpenAddClient}
+              onGenerateInvite={handleOpenInviteDialog}
               getStatusColor={getStatusColor}
               formatDate={formatDate}
             />
@@ -854,6 +1015,27 @@ export default function AdminDashboard() {
         onOpenChange={setUploadDialogOpen}
         acceptedFileTypes={ACCEPTED_FILE_TYPES}
         allowedExtensionsLabel={ALLOWED_EXTENSIONS_LABEL}
+      />
+
+      <AddClientDialog
+        open={addClientDialogOpen}
+        onOpenChange={setAddClientDialogOpen}
+        addClientForm={addClientForm}
+        onChange={setAddClientForm}
+        onSave={handleAddClient}
+        saving={addingClient}
+      />
+
+      <InviteLinkDialog
+        open={inviteLinkDialogOpen}
+        onOpenChange={setInviteLinkDialogOpen}
+        client={clientForInvite}
+        inviteUrl={inviteUrl}
+        existingInviteExpiry={existingInviteExpiry}
+        generating={generatingInvite}
+        onGenerate={handleGenerateInviteLink}
+        onRegenerate={handleRegenerateInviteLink}
+        onCopy={handleCopyToClipboard}
       />
     </div>
   );

@@ -15,6 +15,7 @@ import {
   Eye,
   FileText,
   Heart,
+  Link2,
   Loader2,
   Search,
   Trash2,
@@ -31,6 +32,7 @@ interface ClientsTableProps {
   onSendFeedback: (client: Client) => void;
   onEdit: (client: Client) => void;
   onDelete: (client: Client) => void;
+  onGenerateInvite: (client: Client) => void;
   getStatusColor: (status: string) => string;
   formatDate: (dateString: string) => string;
 }
@@ -46,6 +48,7 @@ export const ClientsTable = ({
   onSendFeedback,
   onEdit,
   onDelete,
+  onGenerateInvite,
   getStatusColor,
   formatDate,
 }: ClientsTableProps) => (
@@ -162,6 +165,19 @@ export const ClientsTable = ({
                       ) : (
                         <Heart className="h-4 w-4" />
                       )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onGenerateInvite(client)}
+                      title={
+                        client.client_email
+                          ? "Generate Invite Link"
+                          : "Email required for invite"
+                      }
+                      disabled={!client.client_email}
+                    >
+                      <Link2 className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"

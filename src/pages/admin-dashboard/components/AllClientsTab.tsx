@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, UserPlus } from "lucide-react";
 import { ClientsTable } from "./ClientsTable";
 import type { Client } from "../types";
 
@@ -17,6 +17,8 @@ interface AllClientsTabProps {
   onSendFeedback: (client: Client) => Promise<void>;
   onEdit: (client: Client) => void;
   onDelete: (client: Client) => void;
+  onAddClient: () => void;
+  onGenerateInvite: (client: Client) => void;
   getStatusColor: (status: string) => string;
   formatDate: (dateString: string) => string;
 }
@@ -32,6 +34,8 @@ export const AllClientsTab = ({
   onSendFeedback,
   onEdit,
   onDelete,
+  onAddClient,
+  onGenerateInvite,
   getStatusColor,
   formatDate,
 }: AllClientsTabProps) => {
@@ -42,23 +46,30 @@ export const AllClientsTab = ({
           <div className="space-y-1">
             <p className="text-lg font-semibold">Clients</p>
             <p className="text-sm text-muted-foreground">
-              Open the Typeform to import meeting notes and trigger onboarding automatically.
+              Manage clients manually or import via Typeform.
             </p>
           </div>
-          <Button
-            asChild
-            className="rounded-full"
-          >
-            <a
-              href={TYPEFORM_MEETING_NOTES_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Open meeting notes Typeform"
+          <div className="flex gap-2">
+            <Button onClick={onAddClient} className="rounded-full">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Client
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="rounded-full"
             >
-              Open Typeform
-              <ExternalLink className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
+              <a
+                href={TYPEFORM_MEETING_NOTES_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open meeting notes Typeform"
+              >
+                Open Typeform
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+          </div>
         </div>
 
         <ClientsTable
@@ -72,6 +83,7 @@ export const AllClientsTab = ({
           onSendFeedback={onSendFeedback}
           onEdit={onEdit}
           onDelete={onDelete}
+          onGenerateInvite={onGenerateInvite}
           getStatusColor={getStatusColor}
           formatDate={formatDate}
         />
