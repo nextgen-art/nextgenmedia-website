@@ -721,6 +721,8 @@ export default function AdminDashboard() {
       notes: client.notes,
       dropbox_link: client.dropbox_link,
       rela_link: client.rela_link,
+      strategy_call_link: client.strategy_call_link,
+      filming_date_link: client.filming_date_link,
     });
     setEditDialogOpen(true);
   }

@@ -27,6 +27,8 @@ interface ClientData {
   onboarding_started_date: string;
   dropbox_link: string | null;
   rela_link: string | null;
+  strategy_call_link: string | null;
+  filming_date_link: string | null;
 }
 
 interface ClientDocument {
@@ -351,6 +353,8 @@ export default function ClientDashboard() {
           <ClientResourceLinks
             dropboxUrl={clientData.dropbox_link}
             relaUrl={clientData.rela_link}
+            strategyCallUrl={clientData.strategy_call_link}
+            filmingDateUrl={clientData.filming_date_link}
           />
 
           {/* Project Information */}

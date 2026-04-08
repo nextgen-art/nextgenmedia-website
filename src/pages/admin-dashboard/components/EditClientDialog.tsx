@@ -163,6 +163,36 @@ export const EditClientDialog = ({
             Provide the Rela portal link if this client has one.
           </p>
         </div>
+        <div className="grid gap-2">
+          <Label htmlFor="strategy_call_link">Strategy Call Link</Label>
+          <Input
+            id="strategy_call_link"
+            type="url"
+            value={editForm.strategy_call_link || ""}
+            placeholder="https://calendly.com/..."
+            onChange={(e) =>
+              onChange({ ...editForm, strategy_call_link: e.target.value })
+            }
+          />
+          <p className="text-xs text-muted-foreground">
+            Link for the client to schedule or join their strategy call.
+          </p>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="filming_date_link">Filming Date Link</Label>
+          <Input
+            id="filming_date_link"
+            type="url"
+            value={editForm.filming_date_link || ""}
+            placeholder="https://calendly.com/..."
+            onChange={(e) =>
+              onChange({ ...editForm, filming_date_link: e.target.value })
+            }
+          />
+          <p className="text-xs text-muted-foreground">
+            Link for the client to view or schedule their filming session.
+          </p>
+        </div>
       </div>
       <div className="flex justify-end gap-2">
         <Button

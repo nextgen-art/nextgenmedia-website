@@ -341,6 +341,62 @@ export const ClientDetailsDialog = ({
                     )}
                   </div>
                 </div>
+                <div className="grid gap-2">
+                  <Label>Strategy Call Link</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={clientDetailsForm.strategy_call_link || ""}
+                      onChange={(e) => onFieldChange("strategy_call_link", e.target.value)}
+                      placeholder="https://calendly.com/..."
+                    />
+                    {clientDetailsForm.strategy_call_link && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onCopy(clientDetailsForm.strategy_call_link || "", "Strategy call link")}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(clientDetailsForm.strategy_call_link || "", "_blank")}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Filming Date Link</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={clientDetailsForm.filming_date_link || ""}
+                      onChange={(e) => onFieldChange("filming_date_link", e.target.value)}
+                      placeholder="https://calendly.com/..."
+                    />
+                    {clientDetailsForm.filming_date_link && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onCopy(clientDetailsForm.filming_date_link || "", "Filming date link")}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(clientDetailsForm.filming_date_link || "", "_blank")}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

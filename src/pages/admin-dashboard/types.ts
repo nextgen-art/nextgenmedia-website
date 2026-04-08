@@ -14,6 +14,8 @@ export interface Client {
   notes: string;
   dropbox_link: string | null;
   rela_link: string | null;
+  strategy_call_link: string | null;
+  filming_date_link: string | null;
   contract_signed_date: string | null;
   services_needed: string | null;
   proposal_sent_date: string | null;

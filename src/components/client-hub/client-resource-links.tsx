@@ -1,11 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ClipboardList, ExternalLink, Folder, Share2 } from "lucide-react";
+import { CalendarCheck, ClipboardList, ExternalLink, Folder, Share2, Video } from "lucide-react";
 import { ReactNode } from "react";
 
 interface Props {
   dropboxUrl?: string | null;
   relaUrl?: string | null;
+  strategyCallUrl?: string | null;
+  filmingDateUrl?: string | null;
 }
 
 interface ResourceLink {
@@ -37,7 +39,7 @@ const createKeyDownHandler =
     openResource(href);
   };
 
-const ClientResourceLinks = ({ dropboxUrl, relaUrl }: Props) => {
+const ClientResourceLinks = ({ dropboxUrl, relaUrl, strategyCallUrl, filmingDateUrl }: Props) => {
   const resources: ResourceLink[] = [
     {
       key: "typeform",
@@ -65,6 +67,26 @@ const ClientResourceLinks = ({ dropboxUrl, relaUrl }: Props) => {
       description: "Review live project updates inside Rela.",
       href: relaUrl,
       icon: <Share2 className="h-5 w-5 text-primary" />,
+    });
+  }
+
+  if (strategyCallUrl) {
+    resources.push({
+      key: "strategy-call",
+      label: "Strategy Call",
+      description: "Schedule or join your strategy call with the NextGen Media team.",
+      href: strategyCallUrl,
+      icon: <CalendarCheck className="h-5 w-5 text-primary" />,
+    });
+  }
+
+  if (filmingDateUrl) {
+    resources.push({
+      key: "filming-date",
+      label: "Filming Date",
+      description: "View or schedule your upcoming filming session.",
+      href: filmingDateUrl,
+      icon: <Video className="h-5 w-5 text-primary" />,
     });
   }
 
