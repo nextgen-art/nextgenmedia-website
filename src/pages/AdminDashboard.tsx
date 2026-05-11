@@ -22,6 +22,7 @@ import { HeaderBar } from "@/pages/admin-dashboard/components/HeaderBar";
 import { DashboardTab } from "@/pages/admin-dashboard/components/DashboardTab";
 import { PendingContractsTab } from "@/pages/admin-dashboard/components/PendingContractsTab";
 import { AllClientsTab } from "@/pages/admin-dashboard/components/AllClientsTab";
+import { ProjectManagerTab } from "@/pages/admin-dashboard/components/ProjectManagerTab";
 import { EditClientDialog } from "@/pages/admin-dashboard/components/EditClientDialog";
 import { DeleteClientDialog } from "@/pages/admin-dashboard/components/DeleteClientDialog";
 import { InvoiceConfirmDialog } from "@/pages/admin-dashboard/components/InvoiceConfirmDialog";
@@ -907,6 +908,7 @@ export default function AdminDashboard() {
               )}
             </TabsTrigger>
             <TabsTrigger value="all-clients">All Clients</TabsTrigger>
+            <TabsTrigger value="project-manager">Project Manager</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-8">
@@ -954,6 +956,10 @@ export default function AdminDashboard() {
               getStatusColor={getStatusColor}
               formatDate={formatDate}
             />
+          </TabsContent>
+
+          <TabsContent value="project-manager" className="space-y-4">
+            <ProjectManagerTab clients={clients} />
           </TabsContent>
         </Tabs>
       </main>

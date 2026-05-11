@@ -4,10 +4,13 @@ import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2, LogOut, Mail, Phone, Calendar, FileText, FileSignature, Receipt, ClipboardList, File, Download } from "lucide-react";
+import { Loader2, LogOut, Mail, Phone, CalendarDays, Bell, FileText, FileSignature, Receipt, ClipboardList, File, Download } from "lucide-react";
 import ClientResourceLinks from "@/components/client-hub/client-resource-links";
+import ClientCalendar from "@/components/client-hub/ClientCalendar";
+import ClientReminders from "@/components/client-hub/ClientReminders";
 
 interface ClientData {
   id: string;
@@ -309,56 +312,69 @@ export default function ClientDashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
-        <div className="space-y-6">
-          {/* Welcome Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-2xl">
-                    Welcome back, {clientData.client_name}!
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    Here's your project overview and important information
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Mail className="h-5 w-5 text-primary" />
-                  </div>
+        <Tabs defaultValue="home" className="w-full">
+          <TabsList className="inline-flex gap-2 mb-8">
+            <TabsTrigger value="home">Home</TabsTrigger>
+            <TabsTrigger value="calendar">
+              <CalendarDays className="h-4 w-4 mr-2" />
+              Calendar
+            </TabsTrigger>
+            <TabsTrigger value="reminders">
+              <Bell className="h-4 w-4 mr-2" />
+              Reminders
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Home Tab */}
+          <TabsContent value="home" className="space-y-6">
+            {/* Welcome Card */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="text-sm font-medium">{clientData.client_email}</p>
+                    <CardTitle className="text-2xl">
+                      Welcome back, {clientData.client_name}!
+                    </CardTitle>
+                    <CardDescription className="mt-2">
+                      Here's your project overview and important information
+                    </CardDescription>
                   </div>
                 </div>
-                {clientData.phone_number && (
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Phone className="h-5 w-5 text-primary" />
+                      <Mail className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Phone</p>
-                      <p className="text-sm font-medium">{clientData.phone_number}</p>
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="text-sm font-medium">{clientData.client_email}</p>
                     </div>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  {clientData.phone_number && (
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <Phone className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Phone</p>
+                        <p className="text-sm font-medium">{clientData.phone_number}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
-          <ClientResourceLinks
-            dropboxUrl={clientData.dropbox_link}
-            relaUrl={clientData.rela_link}
-            strategyCallUrl={clientData.strategy_call_link}
-            filmingDateUrl={clientData.filming_date_link}
-          />
+            <ClientResourceLinks
+              dropboxUrl={clientData.dropbox_link}
+              relaUrl={clientData.rela_link}
+              strategyCallUrl={clientData.strategy_call_link}
+              filmingDateUrl={clientData.filming_date_link}
+            />
 
-          {/* Project Information */}
-          <div className="grid gap-6">
+            {/* Project Details */}
             <Card>
               <CardHeader>
                 <CardTitle>Project Details</CardTitle>
@@ -378,87 +394,120 @@ export default function ClientDashboard() {
                 )}
               </CardContent>
             </Card>
-          </div>
 
-          {/* Documents Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Documents</CardTitle>
-              <CardDescription>
-                Access your proposal, contract, and other important files
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loadingDocuments ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
-              ) : documents.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Documents will appear here once uploaded by Angel
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="text-muted-foreground">
-                          {getDocumentIcon(doc.document_type)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{doc.document_name}</p>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Badge variant="outline" className="text-xs">
-                              {doc.document_type.replace(/_/g, ' ')}
-                            </Badge>
-                            {doc.file_size && (
-                              <span>• {formatFileSize(doc.file_size)}</span>
-                            )}
-                            {doc.uploaded_at && (
-                              <span>• {formatDate(doc.uploaded_at)}</span>
+            {/* Documents */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Documents</CardTitle>
+                <CardDescription>
+                  Access your proposal, contract, and other important files
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingDocuments ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : documents.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    Documents will appear here once uploaded by Angel
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {documents.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="text-muted-foreground">
+                            {getDocumentIcon(doc.document_type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{doc.document_name}</p>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Badge variant="outline" className="text-xs">
+                                {doc.document_type.replace(/_/g, ' ')}
+                              </Badge>
+                              {doc.file_size && (
+                                <span>• {formatFileSize(doc.file_size)}</span>
+                              )}
+                              {doc.uploaded_at && (
+                                <span>• {formatDate(doc.uploaded_at)}</span>
+                              )}
+                            </div>
+                            {doc.description && (
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {doc.description}
+                              </p>
                             )}
                           </div>
-                          {doc.description && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {doc.description}
-                            </p>
-                          )}
                         </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDownloadDocument(doc)}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownloadDocument(doc)}
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-          {/* Contact Angel */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Need Help?</CardTitle>
-              <CardDescription>Get in touch with Angel and the NextGen Media team</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="rounded-full">
-                <a href="mailto:angel@nextgenmedia.com">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Contact Angel
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Contact Angel */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Need Help?</CardTitle>
+                <CardDescription>Get in touch with Angel and the NextGen Media team</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="rounded-full">
+                  <a href="mailto:angel@nextgenmedia.com">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Contact Angel
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Calendar Tab */}
+          <TabsContent value="calendar">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Calendar</CardTitle>
+                <CardDescription>
+                  View your upcoming meetings, filming dates, and content deadlines
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ClientCalendar
+                  clientId={clientData.id}
+                  relaUrl={clientData.rela_link}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Reminders Tab */}
+          <TabsContent value="reminders">
+            <Card>
+              <CardHeader>
+                <CardTitle>Reminders</CardTitle>
+                <CardDescription>
+                  Upcoming meetings, filming dates, invoice due dates, and more
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ClientReminders clientId={clientData.id} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

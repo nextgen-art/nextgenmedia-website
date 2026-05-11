@@ -62,3 +62,38 @@ export interface ActivityItem {
   clientName: string;
 }
 
+export interface ClientTask {
+  id: string;
+  client_id: string;
+  title: string;
+  description: string | null;
+  is_completed: boolean;
+  category: "strategy" | "content" | "production" | "billing" | "admin" | "onboarding" | "general" | "other";
+  priority: "low" | "medium" | "high";
+  due_date: string | null;
+  assigned_to: string | null;
+  created_by: string | null;
+  completed_at: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ClientEvent {
+  id: string;
+  client_id: string;
+  event_type: "meeting" | "filming" | "invoice_due" | "content_deadline" | "strategy_call" | "delivery" | "other";
+  title: string;
+  description: string | null;
+  event_date: string;
+  event_time: string | null;
+  is_all_day: boolean;
+  location: string | null;
+  meeting_link: string | null;
+  is_visible_to_client: boolean;
+  reminder_days_before: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
