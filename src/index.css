@@ -44,6 +44,43 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  .admin-theme {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 96%;
+
+    --card: 210 10% 8%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 210 10% 10%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 198 73% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 12% 14%;
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 210 10% 12%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 198 73% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 198 50% 22%;
+    --input: 210 10% 14%;
+    --ring: 198 73% 52%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
   .landing-theme {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
@@ -95,6 +132,43 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Admin dark theme enhancements */
+  .admin-theme .glow-blue {
+    box-shadow: 0 0 20px rgba(45, 171, 223, 0.15);
+  }
+
+  .admin-theme [data-state="active"][role="tab"] {
+    background-color: hsl(198 73% 52% / 0.15);
+    color: hsl(198 73% 52%);
+    border-bottom: 2px solid hsl(198 73% 52%);
+  }
+
+  .admin-theme ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .admin-theme ::-webkit-scrollbar-track {
+    background: hsl(210 10% 8%);
+  }
+
+  .admin-theme ::-webkit-scrollbar-thumb {
+    background: hsl(198 73% 52% / 0.3);
+    border-radius: 3px;
+  }
+
+  .admin-theme ::-webkit-scrollbar-thumb:hover {
+    background: hsl(198 73% 52% / 0.6);
+  }
+
+  .admin-theme .border {
+    border-color: hsl(198 50% 22%);
+  }
+
+  .admin-theme tr:hover td {
+    background-color: hsl(198 73% 52% / 0.05);
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.8s ease-in-out forwards;
   }

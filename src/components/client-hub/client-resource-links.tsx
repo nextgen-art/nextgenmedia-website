@@ -63,8 +63,8 @@ const ClientResourceLinks = ({ dropboxUrl, relaUrl, strategyCallUrl, filmingDate
   if (relaUrl) {
     resources.push({
       key: "rela",
-      label: "Rela Dashboard",
-      description: "Review live project updates inside Rela.",
+      label: "Content Calendar",
+      description: "View your content calendar and upcoming publish schedule.",
       href: relaUrl,
       icon: <Share2 className="h-5 w-5 text-primary" />,
     });

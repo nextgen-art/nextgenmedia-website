@@ -466,7 +466,7 @@ export default function ClientDashboard() {
               </CardHeader>
               <CardContent>
                 <Button asChild className="rounded-full">
-                  <a href="mailto:angel@nextgenmedia.com">
+                  <a href="mailto:angel@next-gen.media">
                     <Mail className="mr-2 h-4 w-4" />
                     Contact Angel
                   </a>

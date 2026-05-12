@@ -50,14 +50,14 @@ export const OverviewMetricsCard = ({ clientSummary, collected, outstanding }: O
           {/* Collected */}
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Collected</p>
-            <p className="text-3xl font-bold text-green-600">{collected}</p>
+            <p className="text-3xl font-bold text-green-400">{collected}</p>
             <p className="text-xs text-muted-foreground pt-1">Payment received</p>
           </div>
 
           {/* Outstanding */}
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Outstanding</p>
-            <p className="text-3xl font-bold text-orange-600">{outstanding}</p>
+            <p className="text-3xl font-bold text-orange-400">{outstanding}</p>
             <p className="text-xs text-muted-foreground pt-1">Invoice sent but unpaid</p>
           </div>
         </div>

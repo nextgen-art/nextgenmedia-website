@@ -120,7 +120,7 @@ export default function ClientCalendar({ clientId, relaUrl }: Props) {
             className="rounded-full"
           >
             <ExternalLink className="h-4 w-4 mr-2" />
-            Content Calendar (RELLA)
+            Content Calendar
           </Button>
         </div>
       )}

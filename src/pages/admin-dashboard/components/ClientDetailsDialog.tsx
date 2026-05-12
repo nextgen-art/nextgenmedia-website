@@ -558,12 +558,12 @@ function CalendarPanel({ clientId, userId, relaLink }: { clientId: string; userI
         </div>
       </div>
 
-      {/* RELLA */}
+      {/* Content Calendar embed */}
       {relaLink && (
         <div className="space-y-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">RELLA Content Calendar</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Content Calendar</p>
           <div className="border rounded-lg overflow-hidden">
-            <iframe src={relaLink} className="w-full h-[420px]" title="RELLA Content Calendar" />
+            <iframe src={relaLink} className="w-full h-[420px]" title="Content Calendar" />
           </div>
         </div>
       )}
@@ -762,7 +762,7 @@ export const ClientDetailsDialog = ({
                   <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {([
                       ["Dropbox Link","dropbox_link"],
-                      ["RELLA Link","rela_link"],
+                      ["Content Calendar URL","rela_link"],
                       ["Strategy Call Link","strategy_call_link"],
                       ["Filming Date Link","filming_date_link"],
                     ] as [string, keyof Client][]).map(([label, field]) => (

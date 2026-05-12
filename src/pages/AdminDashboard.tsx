@@ -892,12 +892,12 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="admin-theme min-h-screen bg-background">
       <HeaderBar profile={profile} onSignOut={handleSignOut} />
 
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="inline-flex gap-2 mb-8">
+          <TabsList className="inline-flex gap-1 mb-8 bg-card border border-primary/20 p-1 rounded-xl shadow-lg shadow-primary/5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="pending-contracts" className="relative">
               Pending Contracts

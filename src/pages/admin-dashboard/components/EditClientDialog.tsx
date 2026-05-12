@@ -149,18 +149,18 @@ export const EditClientDialog = ({
           </p>
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="rela_link">Rela Link</Label>
+          <Label htmlFor="rela_link">Content Calendar URL</Label>
           <Input
             id="rela_link"
             type="url"
             value={editForm.rela_link || ""}
-            placeholder="https://rela.com/..."
+            placeholder="https://calendar.google.com/calendar/embed?src=..."
             onChange={(e) =>
               onChange({ ...editForm, rela_link: e.target.value })
             }
           />
           <p className="text-xs text-muted-foreground">
-            Provide the Rela portal link if this client has one.
+            Paste any embeddable calendar URL (Google Calendar, Notion, RELLA, etc.)
           </p>
         </div>
         <div className="grid gap-2">
