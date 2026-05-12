@@ -262,15 +262,15 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="admin-theme min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (!clientData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="admin-theme min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>No Client Data Found</CardTitle>
@@ -289,22 +289,27 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="admin-theme min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-black">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Client Hub</h1>
-            <p className="text-sm text-white/70">
-              {clientData.business_name || clientData.company_name}
-            </p>
+      <header className="border-b border-primary/30 bg-card/80 backdrop-blur-sm sticky top-0 z-40">
+        <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <img src="/nextgen-logo.png" alt="NextGen Media" className="h-10 w-auto object-contain" />
+            <div className="h-6 w-px bg-primary/30" />
+            <div>
+              <p className="text-xs text-primary font-semibold uppercase tracking-widest">Client Hub</p>
+              <p className="text-xs text-muted-foreground">
+                {clientData.business_name || clientData.company_name}
+              </p>
+            </div>
           </div>
           <Button
-            variant="default"
+            variant="outline"
             onClick={handleSignOut}
-            className="rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            size="sm"
+            className="rounded-full border-primary/40 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-2 h-3.5 w-3.5" />
             Sign Out
           </Button>
         </div>
@@ -313,7 +318,7 @@ export default function ClientDashboard() {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="home" className="w-full">
-          <TabsList className="inline-flex gap-2 mb-8">
+          <TabsList className="inline-flex gap-1 mb-8 bg-card border border-primary/20 p-1 rounded-xl shadow-lg shadow-primary/5">
             <TabsTrigger value="home">Home</TabsTrigger>
             <TabsTrigger value="calendar">
               <CalendarDays className="h-4 w-4 mr-2" />
