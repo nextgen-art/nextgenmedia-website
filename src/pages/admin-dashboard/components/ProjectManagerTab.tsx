@@ -218,7 +218,7 @@ export function ProjectManagerTab({ clients }: ProjectManagerTabProps) {
                 <User className="h-4 w-4 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{client.client_name}</p>
+                <p className="text-sm font-medium truncate text-foreground">{client.client_name}</p>
                 <p className="text-xs text-muted-foreground truncate">
                   {client.business_name || client.company_name || client.client_email}
                 </p>
@@ -423,7 +423,7 @@ export function ProjectManagerTab({ clients }: ProjectManagerTabProps) {
                             <div className="flex-1 min-w-0">
                               <p
                                 className={cn(
-                                  "text-sm",
+                                  "text-sm text-foreground",
                                   task.is_completed && "line-through text-muted-foreground"
                                 )}
                               >
