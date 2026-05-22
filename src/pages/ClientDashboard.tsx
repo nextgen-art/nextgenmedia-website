@@ -11,6 +11,7 @@ import { Loader2, LogOut, Mail, Phone, CalendarDays, Bell, FileText, FileSignatu
 import ClientResourceLinks from "@/components/client-hub/client-resource-links";
 import ClientCalendar from "@/components/client-hub/ClientCalendar";
 import ClientReminders from "@/components/client-hub/ClientReminders";
+import ClientLeads from "@/components/client-hub/ClientLeads";
 
 interface ClientData {
   id: string;
@@ -32,6 +33,7 @@ interface ClientData {
   rela_link: string | null;
   strategy_call_link: string | null;
   filming_date_link: string | null;
+  leads_enabled: boolean;
 }
 
 interface ClientDocument {
@@ -328,7 +330,10 @@ export default function ClientDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               Reminders
             </TabsTrigger>
-          </TabsList>
+          {clientData?.leads_enabled && (
+          <TabsTrigger value="leads">Leads</TabsTrigger>
+        )}
+        </TabsList>
 
           {/* Home Tab */}
           <TabsContent value="home" className="space-y-6">
@@ -435,10 +440,10 @@ export default function ClientDashboard() {
                                 {doc.document_type.replace(/_/g, ' ')}
                               </Badge>
                               {doc.file_size && (
-                                <span>• {formatFileSize(doc.file_size)}</span>
+                                <span>â¢ {formatFileSize(doc.file_size)}</span>
                               )}
                               {doc.uploaded_at && (
-                                <span>• {formatDate(doc.uploaded_at)}</span>
+                                <span>â¢ {formatDate(doc.uploaded_at)}</span>
                               )}
                             </div>
                             {doc.description && (
@@ -512,6 +517,11 @@ export default function ClientDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+          {clientData?.leads_enabled && (
+            <TabsContent value="leads" className="space-y-4">
+              <ClientLeads clientId={clientData.id} />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
     </div>
