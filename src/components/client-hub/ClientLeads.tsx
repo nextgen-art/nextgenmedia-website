@@ -7,9 +7,9 @@ import { Loader2, Users, TrendingUp, PhoneCall, CheckCircle } from "lucide-react
 
 interface Lead {
   id: string;
-  contact_name: string | null;
-  email: string | null;
-  phone: string | null;
+  lead_name: string | null;
+  lead_email: string | null;
+  lead_phone: string | null;
   source: string | null;
   status: string;
   quote_amount: number | null;
@@ -81,7 +81,6 @@ export default function ClientLeads({ clientId }: ClientLeadsProps) {
         .from("leads")
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq("id", leadId);
-
       if (error) throw error;
       setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, status: newStatus } : l));
       toast.success("Status updated");
@@ -143,7 +142,7 @@ export default function ClientLeads({ clientId }: ClientLeadsProps) {
             <CheckCircle className="h-8 w-8 text-green-400" />
             <div>
               <p className="text-2xl font-bold">{stats.won}</p>
-              <p classNama="text-xs text-muted-foreground">Closed Won</p>
+              <p className="text-xs text-muted-foreground">Closed Won</p>
             </div>
           </CardContent>
         </Card>
@@ -177,10 +176,10 @@ export default function ClientLeads({ clientId }: ClientLeadsProps) {
                 <tbody>
                   {leads.map((lead) => (
                     <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                      <td className="py-3 px-2 font-medium">{lead.contact_name || "—"}</td>
+                      <td className="py-3 px-2 font-medium">{lead.lead_name || "—"}</td>
                       <td className="py-3 px-2 text-muted-foreground">
-                        <div>{lead.phone || "—"}</div>
-                        {lead.email && <div className="text-xs">{lead.email}</div>}
+                        <div>{lead.lead_phone || "—"}</div>
+                        {lead.lead_email && <div className="text-xs">{lead.lead_email}</div>}
                       </td>
                       <td className="py-3 px-2 text-muted-foreground capitalize">
                         {lead.source || "—"}
