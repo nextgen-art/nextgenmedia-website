@@ -30,6 +30,7 @@ import { ClientDetailsDialog } from "@/pages/admin-dashboard/components/ClientDe
 import { UploadDocumentDialog } from "@/pages/admin-dashboard/components/UploadDocumentDialog";
 import { AddClientDialog } from "@/pages/admin-dashboard/components/AddClientDialog";
 import { InviteLinkDialog } from "@/pages/admin-dashboard/components/InviteLinkDialog";
+import { LeadsTab } from "@/pages/admin-dashboard/components/LeadsTab";
 
 export default function AdminDashboard() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -909,6 +910,7 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="all-clients">All Clients</TabsTrigger>
             <TabsTrigger value="project-manager">Project Manager</TabsTrigger>
+          <TabsTrigger value="leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-8">
@@ -960,6 +962,9 @@ export default function AdminDashboard() {
 
           <TabsContent value="project-manager" className="space-y-4">
             <ProjectManagerTab clients={clients} />
+          </TabsContent>
+          <TabsContent value="leads" className="space-y-4">
+            <LeadsTab />
           </TabsContent>
         </Tabs>
       </main>
