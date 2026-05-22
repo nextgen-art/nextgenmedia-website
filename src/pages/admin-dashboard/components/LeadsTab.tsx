@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Users, TrendingUp, PhoneCall, CheckCircle } from "lucide-react";
+import { Loader2, Users, TrendingUp, PhoneCall, CheckCircle, DollarSign } from "lucide-react";
 
 interface Lead {
   id: string;
@@ -27,17 +27,13 @@ const STATUS_OPTIONS = [
   { value: "new", label: "New" },
   { value: "contacted", label: "Contacted" },
   { value: "quoted", label: "Quoted" },
-  { value: "closed_won", label: "Closed Won" },
-  { value: "closed_lost", label: "Closed Lost" },
-];
+  { value: "closed_won", label: "Closed Won" },];
 
 const STATUS_COLORS: Record<string, string> = {
   new: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   contacted: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   quoted: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  closed_won: "bg-green-500/20 text-green-400 border-green-500/30",
-  closed_lost: "bg-red-500/20 text-red-400 border-red-500/30",
-};
+  closed_won: "bg-green-500/20 text-green-400 border-green-500/30",};
 
 export function LeadsTab() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -95,6 +91,7 @@ export function LeadsTab() {
     contacted: leads.filter((l) => l.status === "contacted").length,
     quoted: leads.filter((l) => l.status === "quoted").length,
     closed_won: leads.filter((l) => l.status === "closed_won").length,
+    revenue_closed: leads.reduce((sum, l) => sum + (l.closed_amount || 0), 0),
   };
 
   if (loading) {
@@ -108,7 +105,7 @@ export function LeadsTab() {
   return (
     <div className="space-y-6">
       {/* Stats Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <Users className="h-8 w-8 text-primary" />
@@ -145,6 +142,15 @@ export function LeadsTab() {
             </div>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <DollarSign className="h-8 w-8 text-emerald-400" />
+            <div>
+              <p className="text-2xl font-bold">${stats.revenue_closed.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">Revenue Closed</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Leads Table */}
@@ -165,7 +171,7 @@ export function LeadsTab() {
                   <tr className="border-b border-border">
                     <th className="text-left py-3 px-2 text-muted-foreground font-medium">Name</th>
                     <th className="text-left py-3 px-2 text-muted-foreground font-medium">Contact</th>
-                    <th className="text-left py-3 px-2 text-muted-foreground font-medium">Client</th>
+                    <th className="text-left py-3 px-2 text-muted-foreground font-medium">Value</th>
                     <th className="text-left py-3 px-2 text-muted-foreground font-medium">Source</th>
                     <th className="text-left py-3 px-2 text-muted-foreground font-medium">Status</th>
                     <th className="text-left py-3 px-2 text-muted-foreground font-medium">Date</th>
@@ -174,16 +180,16 @@ export function LeadsTab() {
                 <tbody>
                   {leads.map((lead) => (
                     <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                      <td className="py-3 px-2 font-medium">{lead.contact_name || "—"}</td>
+                      <td className="py-3 px-2 font-medium">{lead.contact_name || "â"}</td>
                       <td className="py-3 px-2 text-muted-foreground">
-                        <div>{lead.phone || "—"}</div>
+                        <div>{lead.phone || "â"}</div>
                         {lead.email && <div className="text-xs">{lead.email}</div>}
                       </td>
                       <td className="py-3 px-2">
-                        {lead.clients?.business_name || lead.clients?.client_name || "—"}
+                        {lead.clients?.business_name || lead.clients?.client_name || "â"}
                       </td>
                       <td className="py-3 px-2 text-muted-foreground capitalize">
-                        {lead.source || "—"}
+                        {lead.source || "â"}
                       </td>
                       <td className="py-3 px-2">
                         <Select
