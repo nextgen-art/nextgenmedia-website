@@ -1,5 +1,5 @@
-// ================================================================================================
-// NextGen Media --- GHL Webhook Receiver
+// ============================================================
+// NextGen Media -- GHL Webhook Receiver
 // Netlify Serverless Function
 //
 // SETUP INSTRUCTIONS:
@@ -9,7 +9,7 @@
 // 2. In your Netlify environment variables, add:
 //      SUPABASE_URL     = https://dghlytwuslldhogqscho.supabase.co
 //      SUPABASE_SERVICE_KEY = (your service role key from Supabase Settings > API)
-//      GHL_WEBHOOK_SECRET = (any random string you choose --- must match what you set in GHL)
+//      GHL_WEBHOOK_SECRET   = (any random string you choose -- must match what you set in GHL)
 //
 // 3. Deploy to Netlify. Your webhook URL will be:
 //      https://YOUR-SITE.netlify.app/.netlify/functions/ghl-webhook
@@ -25,14 +25,14 @@
 //
 // 5. IMPORTANT: Set the same GHL_WEBHOOK_SECRET in GHL's webhook
 //    secret field so requests are verified.
-// =================================================================================================
+// ============================================================
 
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 
-// ┒* CLIENT LOOKUP (dynamic --- no hardcoded mappings) —
+// -- CLIENT LOOKUP (dynamic -- no hardcoded mappings) --
 // Clients are matched by their ghl_location_id field in Supabase.
-// To add a new client: open the Admin Dashboard → select the client → Edit → set their GHL Location ID.
+// To add a new client: open the Admin Dashboard, select the client, Edit, set their GHL Location ID.
 // No code changes or redeployments needed when you add new clients.
 async function getClientIdByLocation(sb, locationId) {
   if (!locationId) return null;
@@ -45,21 +45,35 @@ async function getClientIdByLocation(sb, locationId) {
   return data.id;
 }
 
-// — SOURCE NORMALIZATION └
+// -- SOURCE NORMALIZATION --
 function normalizeSource(ghlData) {
-  const source = (ghlData.source || ghlData.attributionSource || '').toLowerCase();
-  const medium  = (ghlData.medium || '').toLowerCase();
+  // GHL workflow payloads nest attribution data under contact.attributionSource
+  const attribution = (ghlData.contact && ghlData.contact.attributionSource) || {};
+  const source = (
+    ghlData.source ||
+    ghlData.attributionSource ||
+    attribution.utm_source || attribution.utmSource ||
+    attribution.sessionSource ||
+    ''
+  ).toLowerCase();
+  const medium = (
+    ghlData.medium ||
+    attribution.utm_medium || attribution.utmMedium ||
+    attribution.medium ||
+    ''
+  ).toLowerCase();
 
   if (source.includes('facebook') || source.includes('fb'))   return { source: 'facebook_ads', medium: 'paid' };
-  if (source.includes('google'))                                return { source: 'google_ads',   medium: 'paid' };
-  if (source.includes('facebook'))                              return { source: 'instagram',    medium: 'paid' };
-  if (source.includes('organic'))                               return { source: 'organic',      medium: 'organic' };
-  if (source.includes('referral'))                              return { source: 'referral',     medium: 'referral' };
-  if (source.includes('direct') || source === '')              return { source: 'direct',       medium: 'direct' };
+  if (source.includes('google'))                              return { source: 'google_ads',   medium: 'paid' };
+  if (source.includes('instagram'))                           return { source: 'instagram',    medium: 'paid' };
+  if (source.includes('organic'))                             return { source: 'organic',      medium: 'organic' };
+  if (source.includes('referral'))                            return { source: 'referral',     medium: 'referral' };
+  if (source.includes('direct') || source === '')             return { source: 'direct',       medium: 'direct' };
+  if (source === 'crm')                                       return { source: 'crm',          medium: 'manual' };
   return { source: source || 'unknown', medium: medium || 'unknown' };
 }
 
-// ┒ STATUS NORMALIZATION └
+// -- STATUS NORMALIZATION --
 function normalizeStatus(ghlStatus) {
   const s = (ghlStatus || '').toLowerCase();
   if (s === 'new' || s === 'open')        return 'new';
@@ -70,7 +84,7 @@ function normalizeStatus(ghlStatus) {
   return 'new';
 }
 
-// ┒ MAIN HANDLER —
+// -- MAIN HANDLER --
 exports.handler = async (event) => {
   // Only accept POST
   if (event.httpMethod !== 'POST') {
@@ -78,11 +92,11 @@ exports.handler = async (event) => {
   }
 
   // Verify webhook secret (if configured)
-  const secret = process.env.GHL_WEBHOOK_SECRET || 'nextgenmedia2026';
+  const secret = process.env.GHL_WEBHOOK_SECRET;
   if (secret) {
     const sig = event.headers['x-ghl-signature'] || event.headers['x-webhook-secret'];
     if (sig !== secret) {
-      console.error('Webhook secret mismatch, received:', sig);
+      console.error('Webhook secret mismatch');
       return { statusCode: 401, body: 'Unauthorized' };
     }
   }
@@ -111,22 +125,28 @@ exports.handler = async (event) => {
   );
 
   // Determine client by looking up ghl_location_id in the database
-  const locationId = payload.locationId || payload.location_id;
+  // GHL workflow payloads nest the location ID: payload.location.id
+  const locationId = payload.locationId || payload.location_id ||
+    (payload.location && payload.location.id);
   const clientId = await getClientIdByLocation(sb, locationId);
 
   if (!clientId) {
     console.warn(`No client found for GHL location: ${locationId}. Set the GHL Location ID on the client in the Admin Dashboard.`);
-    // Return 200 so GHL doesn't keep retrying --- this location just isn't mapped yet
-    return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'No client found for location', locationId, payloadKeys: Object.keys(payload) }) };
+    // Return 200 so GHL does not keep retrying -- this location just isn't mapped yet
+    return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'No client found for location', locationId }) };
   }
 
   const { source, medium } = normalizeSource(payload);
-  const ghlContactId = payload.contactId || payload.id || payload.contact_id;
+  // GHL workflow payloads use contact_id (snake_case) and may also nest under payload.contact
+  const ghlContactId = payload.contactId || payload.contact_id || payload.id ||
+    (payload.contact && payload.contact.id);
 
   // Build lead record
+  // GHL workflow payloads use snake_case field names (first_name, last_name, phone_number)
   const leadRecord = {
     client_id:       clientId,
-    lead_name:       [payload.firstName || payload.first_name, payload.lastName || payload.last_name].filter(Boolean).join(' ') || payload.name || payload.full_name || null,
+    lead_name:       [payload.firstName || payload.first_name, payload.lastName || payload.last_name]
+                       .filter(Boolean).join(' ') || payload.name || payload.full_name || null,
     lead_email:      payload.email || null,
     lead_phone:      payload.phone || payload.phoneNumber || payload.phone_number || null,
     source,
@@ -161,33 +181,24 @@ exports.handler = async (event) => {
 
   try {
     // UPSERT: if lead with same GHL contact ID exists, update it; otherwise insert new
-    let result;
-    if (ghlContactId) {
-      const { data, error } = await sb
-        .from('leads')
-        .upsert(leadRecord, {
-          onConflict: 'ghl_contact_id,client_id',
-          ignoreDuplicates: false,
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      result = data;
-    } else {
-      // No contact ID --- just insert
-      const { data, error } = await sb
-        .from('leads')
-        .insert(leadRecord)
-        .select()
-        .single();
-      if (error) throw error;
-      result = data;
+    const { data, error } = await sb
+      .from('leads')
+      .upsert(leadRecord, {
+        onConflict: 'ghl_contact_id,client_id',
+        ignoreDuplicates: false,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
 
-    console.log('Lead saved:', result.id);
+    console.log('Lead saved:', data.id);
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, lead_id: result.id }),
+      body: JSON.stringify({ success: true, lead_id: data.id }),
     };
 
   } catch (err) {
@@ -197,18 +208,18 @@ exports.handler = async (event) => {
 };
 
 
-// =================================================================================================
+// ============================================================
 // ADDING OTHER CRMs (HubSpot, Pipedrive, Salesforce)
 //
 // Create additional Netlify functions following the same pattern:
 //   /netlify/functions/hubspot-webhook.js
 //   /netlify/functions/pipedrive-webhook.js
 //
-// The logic is identical --- normalize their payload into the same
+// The logic is identical -- normalize their payload into the same
 // lead record shape and upsert into Supabase.
 // All leads land in the same table regardless of CRM source.
 //
 // HubSpot: use crm_source: 'hubspot', crm_lead_id: payload.objectId
 // Pipedrive: use crm_source: 'pipedrive', crm_lead_id: payload.data.id
 // Salesforce: use crm_source: 'salesforce', crm_lead_id: payload.sobject.Id
-// =================================================================================================
+// ============================================================
