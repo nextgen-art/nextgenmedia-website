@@ -5,35 +5,67 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Users, TrendingUp, PhoneCall, CheckCircle, DollarSign } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface Lead {
   id: string;
   client_id: string;
   ghl_contact_id: string | null;
-  contact_name: string | null;
-  email: string | null;
-  phone: string | null;
+  lead_name: string | null;
+  lead_email: string | null;
+  lead_phone: string | null;
   source: string | null;
+  medium: string | null;
   status: string;
   notes: string | null;
   quote_amount: number | null;
   closed_amount: number | null;
+  lead_date: string | null;
   created_at: string;
   updated_at: string;
   clients?: { client_name: string; business_name: string | null };
 }
 
 const STATUS_OPTIONS = [
-  { value: "new", label: "New" },
-  { value: "contacted", label: "Contacted" },
-  { value: "quoted", label: "Quoted" },
-  { value: "closed_won", label: "Closed Won" },];
+  { value: "new",        label: "New" },
+  { value: "contacted",  label: "Contacted" },
+  { value: "quoted",     label: "Quoted" },
+  { value: "closed_won", label: "Closed Won" },
+];
 
 const STATUS_COLORS: Record<string, string> = {
-  new: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  contacted: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  quoted: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  closed_won: "bg-green-500/20 text-green-400 border-green-500/30",};
+  new:        "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  contacted:  "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  quoted:     "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  closed_won: "bg-green-500/20 text-green-400 border-green-500/30",
+};
+
+const SOURCE_COLORS: Record<string, string> = {
+  facebook_ads: "#1877F2",
+  google_ads:   "#EA4335",
+  instagram:    "#E1306C",
+  tiktok_ads:   "#010101",
+  organic:      "#22C55E",
+  referral:     "#A855F7",
+  email:        "#F59E0B",
+  direct:       "#6B7280",
+  crm:          "#64748B",
+};
+
+function sourceLabel(s: string | null) {
+  const map: Record<string, string> = {
+    facebook_ads: "Facebook",
+    google_ads:   "Google",
+    instagram:    "Instagram",
+    tiktok_ads:   "TikTok",
+    organic:      "Organic",
+    referral:     "Referral",
+    email:        "Email",
+    direct:       "Direct",
+    crm:          "CRM",
+  };
+  return map[s || ""] || s || "Unknown";
+}
 
 export function LeadsTab() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -42,12 +74,10 @@ export function LeadsTab() {
 
   useEffect(() => {
     fetchLeads();
-
     const channel = supabase
       .channel("admin-leads")
       .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, fetchLeads)
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, []);
 
@@ -57,10 +87,9 @@ export function LeadsTab() {
         .from("leads")
         .select("*, clients(client_name, business_name)")
         .order("created_at", { ascending: false });
-
       if (error) throw error;
       setLeads(data || []);
-    } catch (err: any) {
+    } catch {
       toast.error("Failed to load leads");
     } finally {
       setLoading(false);
@@ -74,7 +103,6 @@ export function LeadsTab() {
         .from("leads")
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq("id", leadId);
-
       if (error) throw error;
       setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, status: newStatus } : l));
       toast.success("Status updated");
@@ -86,13 +114,22 @@ export function LeadsTab() {
   }
 
   const stats = {
-    total: leads.length,
-    new: leads.filter((l) => l.status === "new").length,
-    contacted: leads.filter((l) => l.status === "contacted").length,
-    quoted: leads.filter((l) => l.status === "quoted").length,
-    closed_won: leads.filter((l) => l.status === "closed_won").length,
+    total:          leads.length,
+    new:            leads.filter((l) => l.status === "new").length,
+    quoted:         leads.filter((l) => l.status === "quoted").length,
+    closed_won:     leads.filter((l) => l.status === "closed_won").length,
     revenue_closed: leads.reduce((sum, l) => sum + (l.closed_amount || 0), 0),
   };
+
+  // Source breakdown for chart
+  const sourceCounts = leads.reduce<Record<string, number>>((acc, l) => {
+    const s = l.source || "unknown";
+    acc[s] = (acc[s] || 0) + 1;
+    return acc;
+  }, {});
+  const sourceData = Object.entries(sourceCounts)
+    .map(([source, count]) => ({ source, label: sourceLabel(source), count }))
+    .sort((a, b) => b.count - a.count);
 
   if (loading) {
     return (
@@ -153,6 +190,34 @@ export function LeadsTab() {
         </Card>
       </div>
 
+      {/* Source Breakdown Chart */}
+      {sourceData.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Leads by Source</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={sourceData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: "8px", fontSize: "12px" }}
+                  labelStyle={{ color: "#f1f5f9" }}
+                  itemStyle={{ color: "#94a3b8" }}
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  {sourceData.map((entry) => (
+                    <Cell key={entry.source} fill={SOURCE_COLORS[entry.source] || "#6366f1"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Leads Table */}
       <Card>
         <CardHeader>
@@ -180,16 +245,22 @@ export function LeadsTab() {
                 <tbody>
                   {leads.map((lead) => (
                     <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                      <td className="py-3 px-2 font-medium">{lead.contact_name || "â"}</td>
+                      <td className="py-3 px-2 font-medium text-foreground">
+                        {lead.lead_name || "—"}
+                      </td>
                       <td className="py-3 px-2 text-muted-foreground">
-                        <div>{lead.phone || "â"}</div>
-                        {lead.email && <div className="text-xs">{lead.email}</div>}
+                        <div>{lead.lead_phone || "—"}</div>
+                        {lead.lead_email && <div className="text-xs">{lead.lead_email}</div>}
                       </td>
-                      <td className="py-3 px-2">
-                        {lead.clients?.business_name || lead.clients?.client_name || "â"}
+                      <td className="py-3 px-2 font-medium">
+                        {lead.closed_amount
+                          ? <span className="text-emerald-400">${lead.closed_amount.toLocaleString()}</span>
+                          : lead.quote_amount
+                          ? <span className="text-purple-400">${lead.quote_amount.toLocaleString()}</span>
+                          : <span className="text-muted-foreground">—</span>}
                       </td>
-                      <td className="py-3 px-2 text-muted-foreground capitalize">
-                        {lead.source || "â"}
+                      <td className="py-3 px-2 text-muted-foreground">
+                        {sourceLabel(lead.source)}
                       </td>
                       <td className="py-3 px-2">
                         <Select
@@ -208,9 +279,9 @@ export function LeadsTab() {
                         </Select>
                       </td>
                       <td className="py-3 px-2 text-muted-foreground text-xs">
-                        {new Date(lead.created_at).toLocaleDateString("en-US", {
-                          month: "short", day: "numeric", year: "numeric",
-                        })}
+                        {lead.lead_date
+                          ? new Date(lead.lead_date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+                          : new Date(lead.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </td>
                     </tr>
                   ))}
