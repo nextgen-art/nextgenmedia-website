@@ -50,6 +50,8 @@ const SOURCE_COLORS: Record<string, string> = {
   email:        "#F59E0B",
   direct:       "#6B7280",
   crm:          "#64748B",
+  website:     "#10B981",
+  call:        "#0EA5E9",
 };
 
 function sourceLabel(s: string | null) {
@@ -63,6 +65,8 @@ function sourceLabel(s: string | null) {
     email:        "Email",
     direct:       "Direct",
     crm:          "CRM",
+    website:     "Website",
+    call:        "Call / Phone",
   };
   return map[s || ""] || s || "Unknown";
 }
