@@ -80,6 +80,8 @@ function normalizeSource(payload) {
   if (rawSource.includes('instagram'))                            return { source: 'instagram',    medium: 'paid' };
   if (rawSource.includes('tiktok'))                               return { source: 'tiktok_ads',   medium: 'paid' };
   if (rawSource.includes('organic'))                              return { source: 'organic',      medium: 'organic' };
+  if (rawSource.includes('website') || rawSource.includes('web_form')) return { source: 'website', medium: 'organic' };
+  if (rawSource.includes('call') || rawSource.includes('phone') || rawMedium.includes('call') || rawMedium.includes('phone')) return { source: 'call', medium: 'offline' };
   if (rawSource.includes('referral'))                             return { source: 'referral',     medium: 'referral' };
   if (rawSource.includes('email'))                                return { source: 'email',        medium: 'email' };
   if (rawSource.includes('direct') || rawSource === '')           return { source: 'direct',       medium: 'direct' };
