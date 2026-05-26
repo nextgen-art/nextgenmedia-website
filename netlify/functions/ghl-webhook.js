@@ -75,7 +75,7 @@ function normalizeSource(payload) {
     ''
   ).toLowerCase();
 
-  if (rawSource.includes('facebook') || rawSource.includes('fb')) return { source: 'facebook_ads', medium: 'paid' };
+  if (rawSource.includes('facebook') || rawSource.includes('fb') || rawSource.includes('meta')) return { source: 'facebook_ads', medium: 'paid' };
   if (rawSource.includes('google'))                               return { source: 'google_ads',   medium: 'paid' };
   if (rawSource.includes('instagram'))                            return { source: 'instagram',    medium: 'paid' };
   if (rawSource.includes('tiktok'))                               return { source: 'tiktok_ads',   medium: 'paid' };
