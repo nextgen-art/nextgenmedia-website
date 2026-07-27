@@ -64,8 +64,11 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} NextGen Media. All rights reserved.</p>
+          <Link to="/privacy-policy" className="hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>
