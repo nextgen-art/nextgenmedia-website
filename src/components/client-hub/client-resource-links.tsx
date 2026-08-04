@@ -18,7 +18,7 @@ interface ResourceLink {
   icon: ReactNode;
 }
 
-const TYPEFORM_LINK = "https://form.typeform.com/to/Uf82SsvG";
+const ONBOARDING_FORM_LINK = "https://form.jotform.com/261514202653044";
 
 const openResource = (href: string) => {
   window.open(href, "_blank", "noopener,noreferrer");
@@ -45,7 +45,7 @@ const ClientResourceLinks = ({ dropboxUrl, relaUrl, strategyCallUrl, filmingDate
       key: "typeform",
       label: "Client Intake Form",
       description: "Complete this onboarding form so our team can get started.",
-      href: TYPEFORM_LINK,
+      href: ONBOARDING_FORM_LINK,
       icon: <ClipboardList className="h-5 w-5 text-primary" />,
     },
   ];
